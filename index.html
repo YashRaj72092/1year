@@ -6,23 +6,23 @@
     <title>Our Garden of Love ❤️</title>
     <style>
         :root { --rose: #ff4d6d; --garden-bg: #fff0f3; }
-        body { background: var(--garden-bg); margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        body { background-color: var(--garden-bg) !important; margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
         #diary-wrapper { display: none; perspective: 2500px; z-index: 100; }
-        .book { width: 380px; height: 550px; position: relative; transform-style: preserve-3d; }
+        .book { width: 420px; height: 580px; position: relative; transform-style: preserve-3d; }
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
-        .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 15px 15px 0; box-shadow: inset 3px 0 20px rgba(0,0,0,0.1), 5px 5px 15px rgba(0,0,0,0.1); border: 1px solid #ddd; background: #fff; }
-        .back { transform: rotateY(180deg); background: #f9f9f9; border-radius: 15px 0 0 15px; }
-        img, video { max-width: 100%; max-height: 280px; border: 5px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        p { font-size: 1.1rem; color: #333; text-align: center; margin-top: 15px; }
-        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
-        .btn-magic { background: var(--rose); color: white; border: none; padding: 15px 40px; border-radius: 40px; cursor: pointer; font-size: 1.3rem; }
+        .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; box-shadow: inset 5px 0 25px rgba(0,0,0,0.05), 10px 10px 25px rgba(0,0,0,0.1); border: 1px solid #eee; background: #ffffff; }
+        .back { transform: rotateY(180deg); background: #fafafa; border-radius: 20px 0 0 20px; }
+        img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
+        p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; line-height: 1.4; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--garden-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
+        .btn-magic { background: var(--rose); color: white; border: none; padding: 18px 45px; border-radius: 50px; cursor: pointer; font-size: 1.4rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="overlay">
-        <h1 style="color: var(--rose); font-size: 3rem;">Happy 1 Year Anniversary ❤️</h1>
+        <h1 style="color: var(--rose); font-size: 3.5rem; margin-bottom: 30px;">Happy 1 Year Anniversary ❤️</h1>
         <button class="btn-magic" onclick="startDiary()">Step into our Garden ✨</button>
     </div>
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
@@ -32,39 +32,39 @@
                 <div class="front"><img src="she.jpeg"><p>A blooming surprise... 💌</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ily :) 🎥</p></div><div class="back"></div>
+                <div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ilysmmmmm :) 🎥</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
                 <div class="front"><img src="letter.jpeg"><p>From my heart... ❤️</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="eyes.jpeg"><p>My world... ✨</p></div><div class="back"></div>
+                <div class="front"><img src="eyes.jpeg"><p>My world is in your eyes ✨</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="best.jpeg"><p>You are the best 🌟</p></div><div class="back"></div>
+                <div class="front"><img src="best.jpeg"><p>You are the best part of me 🌟</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="Happy Place.jpeg"><p>My favorite place 💗</p></div><div class="back"></div>
+                <div class="front"><img src="Happy Place.jpeg"><p>My favorite place is with you 💗</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="her core.jpeg"><p>Forever ♡</p></div><div class="back"></div>
+                <div class="front"><img src="her core.jpeg"><p>Always in my core ♡</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="Hugs for my Bebe.jpeg"><p>Hugs 🫂</p></div><div class="back"></div>
+                <div class="front"><img src="Hugs for my Bebe.jpeg"><p>Warmest hugs for my bebe 🫂</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="I'm doin my best.jpeg"><p>Doing my best... 🥺</p></div><div class="back"></div>
+                <div class="front"><img src="I'm doin my best.jpeg"><p>Always doing my best for us... 🥺</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="she.jpeg"><p>Cute even when angry! 💕</p></div><div class="back"></div>
+                <div class="front"><img src="she.jpeg"><p>Cute even when you're angry! 💕</p></div><div class="back"></div>
             </div>
             <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><img src="Thank you for existing.jpeg"><p>Thanks for existing ♡</p></div><div class="back"></div>
+                <div class="front"><img src="Thank you for existing.jpeg"><p>Thank you for just existing ♡</p></div><div class="back"></div>
             </div>
             <div class="page">
                 <div class="front">
-                    <p>One last special message... ♡</p>
-                    <button class="btn-magic" style="font-size:1rem;" onclick="triggerSecretUpload(this)">▶ Play My Message</button>
+                    <p>I have one last special message... ♡</p>
+                    <button class="btn-magic" style="font-size:1.1rem;" onclick="triggerSecretUpload(this)">▶ Play My Message</button>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
     <script>
         let mediaRecorder, recordedChunks = [];
         const bgMusic = document.getElementById('bg-music');
-        function setupZ() { document.querySelectorAll('.page').forEach((el, i) => { el.style.zIndex = 12 - i; }); }
+        function setupZ() { const pages = document.querySelectorAll('.page'); pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); }
         setupZ();
         async function startDiary() {
             try {
